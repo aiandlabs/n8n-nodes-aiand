@@ -1,0 +1,36 @@
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+      # What ships is what n8n verifies: no runtime dependencies, and only dist in the tarball.
+      - name: Check the package contents
+        run: |
+          test "$(jq '.dependencies // {} | length' package.json)" = 0
+          # npm 10 prints an array, npm 11+ an object keyed by package name.
+          npm pack --dry-run --json | jq -e '(if type == "array" then .[0] else .[] end) | all(.files[]; .path | startswith("dist/") or . == "package.json" or . == "README.md" or . == "LICENSE.md")'
