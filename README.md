@@ -19,7 +19,7 @@ n8n checks the key against `https://api.aiand.com/v1/models` when you save the c
 
 1. Add an **AI Agent** (or another node with a chat model input).
 2. Connect **ai& Chat Model** to its **Chat Model** input and pick the credential.
-3. Choose a model. The list is read live from the ai& API, so new models appear without updating this node.
+3. Choose a model. The list is read live from the ai& API, so new models appear without updating this node, and models scheduled for retirement are left out. A workflow already set to a model that is later retired stops working at its retirement date; switch it to another model.
 
 ### Options
 
