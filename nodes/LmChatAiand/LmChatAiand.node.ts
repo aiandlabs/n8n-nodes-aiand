@@ -78,6 +78,12 @@ export class LmChatAiand implements INodeType {
 							output: {
 								postReceive: [
 									{ type: 'rootProperty', properties: { property: 'data' } },
+									// A model with a deprecation date is being retired, so new workflows should not
+									// pick it. Live data: future retirements need no node release.
+									{
+										type: 'filter',
+										properties: { pass: '={{ !$responseItem.deprecation_date }}' },
+									},
 									{
 										type: 'setKeyValue',
 										properties: {
