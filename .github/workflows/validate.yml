@@ -8,8 +8,11 @@ on:
 permissions:
   contents: read
 
+# A PR shares one group per branch, so a new push cancels its older run. Every
+# push to main gets its own group: publish.yml needs a successful run on the
+# exact commit being tagged, and a shared group would cancel it.
 concurrency:
-  group: validate-${{ github.ref }}
+  group: validate-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -17,14 +20,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: 'lts/*'
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
           cache: npm
-
-      - run: npm ci
+      - run: npm ci --ignore-scripts
       - run: npm run lint
       - run: npm run build
 
@@ -33,4 +36,4 @@ jobs:
         run: |
           test "$(jq '.dependencies // {} | length' package.json)" = 0
           # npm 10 prints an array, npm 11+ an object keyed by package name.
-          npm pack --dry-run --json | jq -e '(if type == "array" then .[0] else .[] end) | all(.files[]; .path | startswith("dist/") or . == "package.json" or . == "README.md" or . == "LICENSE.md")'
+          npm pack --dry-run --json | jq -e '(if type == "array" then .[0] else .[] end) | all(.files[]; .path | startswith("dist/") or . == "package.json" or . == "README.md" or . == "LICENSE.md" or . == "CHANGELOG.md")'
