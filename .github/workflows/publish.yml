@@ -61,8 +61,22 @@ jobs:
             echo "::error::CHANGELOG.md has no entries under [$VERSION]; add them and re-push the tag"
             exit 1
           fi
-          if [ -n "$(npm view "$NAME@$VERSION" version 2>/dev/null || true)" ]; then
-            echo "::error::$NAME@$VERSION is already on npm; bump package.json and tag the new version"
+          # Only npm's E404 means "not published"; any other lookup failure stops
+          # the run rather than publishing on an inconclusive answer.
+          if PUBLISHED="$(npm view "$NAME@$VERSION" version 2>"$RUNNER_TEMP/npm-view.err")"; then
+            # npm is published but the GitHub release is not: an earlier run failed
+            # after publishing. Re-running recovers the release without publishing again.
+            if [ -n "$PUBLISHED" ] && gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              echo "::error::$NAME@$VERSION and release $TAG already exist; bump package.json and tag the new version"
+              exit 1
+            fi
+            if [ -n "$PUBLISHED" ]; then
+              echo "::notice::$NAME@$VERSION is already on npm; creating only the missing GitHub release"
+              echo "SKIP_NPM_PUBLISH=true" >> "$GITHUB_ENV"
+            fi
+          elif ! grep -q E404 "$RUNNER_TEMP/npm-view.err"; then
+            cat "$RUNNER_TEMP/npm-view.err" >&2
+            echo "::error::could not check whether $NAME@$VERSION is on npm"
             exit 1
           fi
         env:
@@ -81,7 +95,8 @@ jobs:
       # secret can then be deleted without touching this file.
       # RELEASE_MODE satisfies n8n-node's prepublishOnly guard, which otherwise
       # refuses a plain npm publish.
-      - run: npm publish --provenance --access public
+      - if: env.SKIP_NPM_PUBLISH != 'true'
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           RELEASE_MODE: "true"
