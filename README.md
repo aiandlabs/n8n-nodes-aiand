@@ -52,7 +52,21 @@ npm run build
 npm run dev   # starts a local n8n with this node loaded
 ```
 
-Releases are published to npm by `.github/workflows/publish.yml` with provenance when a version tag is pushed.
+### Releasing
+
+`main` only takes changes through reviewed PRs, so there is no release script: n8n-node's `release` command commits and pushes to `main` itself.
+
+1. In a PR, bump `version` in `package.json` and move the `[Unreleased]` entries in `CHANGELOG.md` under the new version.
+2. Merge it and wait for `validate` to pass on `main`.
+3. Tag the merged commit with `v` plus the new version:
+
+   ```bash
+   git switch main && git pull
+   TAG="v$(node -p "require('./package.json').version")"
+   git tag "$TAG" && git push origin "$TAG"
+   ```
+
+`.github/workflows/publish.yml` checks the tag against `package.json`, `main`, `validate` and npm, publishes with provenance, and creates the GitHub release from the changelog.
 
 ## Resources
 

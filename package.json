@@ -21,19 +21,26 @@
 	"bugs": {
 		"url": "https://github.com/aiandlabs/n8n-nodes-aiand/issues"
 	},
+	"devEngines": {
+		"packageManager": {
+			"name": "npm",
+			"version": ">=11.10.0",
+			"onFail": "warn"
+		}
+	},
 	"scripts": {
 		"build": "n8n-node build",
 		"build:watch": "tsc --watch",
 		"dev": "n8n-node dev",
 		"lint": "n8n-node lint",
 		"lint:fix": "n8n-node lint --fix",
-		"release": "n8n-node release",
 		"prepublishOnly": "n8n-node prerelease"
 	},
 	"files": [
 		"dist",
 		"!dist/tsconfig.tsbuildinfo",
-		"!dist/**/*.map"
+		"!dist/**/*.map",
+		"CHANGELOG.md"
 	],
 	"publishConfig": {
 		"access": "public"
@@ -50,10 +57,9 @@
 		]
 	},
 	"devDependencies": {
-		"@n8n/node-cli": "*",
+		"@n8n/node-cli": "0.53.3",
 		"eslint": "9.39.4",
 		"prettier": "3.8.3",
-		"release-it": "21.1.1",
 		"typescript": "5.9.3"
 	},
 	"peerDependencies": {
