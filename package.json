@@ -21,6 +21,13 @@
 	"bugs": {
 		"url": "https://github.com/aiandlabs/n8n-nodes-aiand/issues"
 	},
+	"devEngines": {
+		"packageManager": {
+			"name": "npm",
+			"version": ">=11.10.0",
+			"onFail": "warn"
+		}
+	},
 	"scripts": {
 		"build": "n8n-node build",
 		"build:watch": "tsc --watch",
