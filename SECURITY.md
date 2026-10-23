@@ -14,4 +14,6 @@ The node runs inside n8n. The API key is stored in n8n's own encrypted credentia
 
 In scope: the key reaching any other host, appearing in node output, logs or error messages, or being sent with requests it should not authenticate.
 
-Out of scope: anything that needs prior access to the n8n instance, its database or its encryption key, which already controls every credential stored there.
+In scope too: a user who can use or view a workflow but does not own the credential seeing its key, for example in another user's node output.
+
+Out of scope: anything that needs control of the credential itself or of the n8n instance (its database, its encryption key, or owner or admin access), which already exposes every credential stored there.

@@ -56,7 +56,8 @@ jobs:
           # The GitHub release is created after npm publish, from this section;
           # extract it now so a missing or empty one fails before anything is published.
           awk -v v="$VERSION" 'index($0, "## [") == 1 { on = (index($0, "## [" v "]") == 1); next } on' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
-          if ! grep -q '[^[:space:]]' "$RUNNER_TEMP/notes.md"; then
+          # Entries are list items, as in aiand-cli: a section with only headings is empty.
+          if ! grep -q '^- ' "$RUNNER_TEMP/notes.md"; then
             echo "::error::CHANGELOG.md has no entries under [$VERSION]; add them and re-push the tag"
             exit 1
           fi

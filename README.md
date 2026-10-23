@@ -62,7 +62,8 @@ npm run dev   # starts a local n8n with this node loaded
 
    ```bash
    git switch main && git pull
-   git tag v0.1.0 && git push origin v0.1.0
+   TAG="v$(node -p "require('./package.json').version")"
+   git tag "$TAG" && git push origin "$TAG"
    ```
 
 `.github/workflows/publish.yml` checks the tag against `package.json`, `main`, `validate` and npm, publishes with provenance, and creates the GitHub release from the changelog.
