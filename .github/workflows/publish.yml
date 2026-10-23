@@ -53,8 +53,11 @@ jobs:
             echo "::error::no successful validate run on main for $GITHUB_SHA; wait for it (or fix it) and re-push the tag"
             exit 1
           fi
-          if ! awk -v v="$VERSION" 'index($0, "## [" v "]") == 1 { found = 1 } END { exit !found }' CHANGELOG.md; then
-            echo "::error::CHANGELOG.md has no [$VERSION] section; add it and re-push the tag"
+          # The GitHub release is created after npm publish, from this section;
+          # extract it now so a missing or empty one fails before anything is published.
+          awk -v v="$VERSION" 'index($0, "## [") == 1 { on = (index($0, "## [" v "]") == 1); next } on' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
+          if ! grep -q '[^[:space:]]' "$RUNNER_TEMP/notes.md"; then
+            echo "::error::CHANGELOG.md has no entries under [$VERSION]; add them and re-push the tag"
             exit 1
           fi
           if [ -n "$(npm view "$NAME@$VERSION" version 2>/dev/null || true)" ]; then
@@ -81,10 +84,8 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           RELEASE_MODE: "true"
-      # Release notes are the version's CHANGELOG section.
+      # Release notes are the version's CHANGELOG section, not generated ones.
       - run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          awk -v v="$VERSION" 'index($0, "## [") == 1 { on = (index($0, "## [" v "]") == 1); next } on' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
           gh release create "$GITHUB_REF_NAME" --verify-tag --notes-file "$RUNNER_TEMP/notes.md" --title "$GITHUB_REF_NAME"
         env:
           GH_TOKEN: ${{ github.token }}

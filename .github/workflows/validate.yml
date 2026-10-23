@@ -31,7 +31,7 @@ jobs:
       - run: npm run lint
       - run: npm run build
 
-      # What ships is what n8n verifies: no runtime dependencies, and only dist in the tarball.
+      # What ships is what n8n verifies: no runtime dependencies, and only dist plus the docs in the tarball.
       - name: Check the package contents
         run: |
           test "$(jq '.dependencies // {} | length' package.json)" = 0

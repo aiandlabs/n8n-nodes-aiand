@@ -54,11 +54,16 @@ npm run dev   # starts a local n8n with this node loaded
 
 ### Releasing
 
-`main` only takes changes through reviewed PRs, so don't run `npm run release` locally (it commits and pushes to `main`).
+`main` only takes changes through reviewed PRs, so there is no release script: n8n-node's `release` command commits and pushes to `main` itself.
 
 1. In a PR, bump `version` in `package.json` and move the `[Unreleased]` entries in `CHANGELOG.md` under the new version.
 2. Merge it and wait for `validate` to pass on `main`.
-3. Tag that commit: `git tag v0.1.0 && git push origin v0.1.0`.
+3. Tag the merged commit with `v` plus the new version:
+
+   ```bash
+   git switch main && git pull
+   git tag v0.1.0 && git push origin v0.1.0
+   ```
 
 `.github/workflows/publish.yml` checks the tag against `package.json`, `main`, `validate` and npm, publishes with provenance, and creates the GitHub release from the changelog.
 
