@@ -71,7 +71,20 @@ jobs:
               exit 1
             fi
             if [ -n "$PUBLISHED" ]; then
-              echo "::notice::$NAME@$VERSION is already on npm; creating only the missing GitHub release"
+              # A release must describe the source the npm artifact was built from, and npm
+              # never lets a version be republished to fix a mismatch. So recover only when
+              # the artifact's provenance names this repository and this exact commit.
+              ATTESTATIONS="$(curl -fsS "https://registry.npmjs.org/-/npm/v1/attestations/${NAME/\//%2f}@$VERSION")" || {
+                echo "::error::$NAME@$VERSION is on npm without readable provenance; cannot tie it to $GITHUB_SHA"
+                exit 1
+              }
+              PROVENANCE="$(jq -r '.attestations[] | select(.predicateType | startswith("https://slsa.dev/provenance/")) | .bundle.dsseEnvelope.payload' <<<"$ATTESTATIONS" | base64 -d)"
+              BUILT_FROM="$(jq -r '.predicate.buildDefinition | "\(.externalParameters.workflow.repository) \(.resolvedDependencies[0].digest.gitCommit)"' <<<"$PROVENANCE")"
+              if [ "$BUILT_FROM" != "https://github.com/$GITHUB_REPOSITORY $GITHUB_SHA" ]; then
+                echo "::error::$NAME@$VERSION was built from $BUILT_FROM, not $GITHUB_SHA; not creating a release for it"
+                exit 1
+              fi
+              echo "::notice::$NAME@$VERSION is already on npm from this commit; creating only the missing GitHub release"
               echo "SKIP_NPM_PUBLISH=true" >> "$GITHUB_ENV"
             fi
           elif ! grep -q E404 "$RUNNER_TEMP/npm-view.err"; then
