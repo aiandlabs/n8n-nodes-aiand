@@ -4,6 +4,8 @@ An n8n chat model node for [ai&](https://aiand.com), which serves open-weight mo
 
 Connect **ai& Chat Model** to an AI Agent, Basic LLM Chain or any other node that takes a chat model.
 
+![ai& Chat Model as the model of an AI Agent with memory and tools](https://raw.githubusercontent.com/aiandlabs/n8n-nodes-aiand/main/docs/agent-workflow.png)
+
 ## Installation
 
 Follow n8n's [community nodes installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) and install `@aiand/n8n-nodes-aiand`.
@@ -39,7 +41,7 @@ Ask the chat "What is 1234 × 5678 + 91011?" and the agent calls the calculator 
 
 ## Compatibility
 
-Tested with n8n 2.44.5: AI Agent with tools on every ai& model, each model's reasoning levels, and the credential check.
+Tested with n8n 2.44.6, installed from npm through **Settings → Community Nodes** (and updated in place): AI Agent with memory and tools on every ai& model, each model's reasoning levels, the Text Classifier, Information Extractor and Basic LLM Chain, and the credential check.
 
 For the **Structured Output Parser**, use a model other than `openai/gpt-oss-120b`: it omits the wrapper object n8n's parser asks for.
 
