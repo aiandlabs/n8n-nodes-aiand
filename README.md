@@ -66,7 +66,9 @@ npm run dev   # starts a local n8n with this node loaded
    git tag "$TAG" && git push origin "$TAG"
    ```
 
-`.github/workflows/publish.yml` checks the tag against `package.json`, `main`, `validate` and npm, publishes with provenance, and creates the GitHub release from the changelog.
+4. Approve the staged version with your 2FA, on npmjs.com under **Staged Packages** or with `npm stage list @aiand/n8n-nodes-aiand` and `npm stage approve <id>`. It is not installable until then.
+
+`.github/workflows/publish.yml` checks the tag against `package.json`, `main`, `validate` and npm, stages the version on npm with provenance through a trusted publisher (no token), and creates the GitHub release from the changelog.
 
 ## Resources
 

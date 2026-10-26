@@ -97,21 +97,20 @@ jobs:
       # Node 22 bundles npm 10, which has no OIDC support: a trusted-publishing
       # publish falls back to an empty token and the registry answers with a
       # misleading 404. Trusted publishing needs npm 11.5.1 or newer. Pinned
-      # because this binary handles NODE_AUTH_TOKEN; bump it deliberately.
+      # because this binary performs the OIDC exchange; bump it deliberately.
       - name: Install an npm that speaks OIDC
         run: npm install -g npm@11.20.0
       - run: npm ci --ignore-scripts
       - run: npm run lint
       - run: npm run build
-      # With a trusted publisher configured for this repository and workflow
-      # filename, npm authenticates over OIDC and NPM_TOKEN goes unused; the
-      # secret can then be deleted without touching this file.
+      # Stages the version over OIDC through the trusted publisher, which may only
+      # stage: nothing reaches users until a maintainer approves it with 2FA on npm,
+      # so this job alone cannot ship a release. No token is involved.
       # RELEASE_MODE satisfies n8n-node's prepublishOnly guard, which otherwise
-      # refuses a plain npm publish.
+      # refuses a plain publish.
       - if: env.SKIP_NPM_PUBLISH != 'true'
-        run: npm publish --provenance --access public
+        run: npm stage publish --provenance --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           RELEASE_MODE: "true"
       # Release notes are the version's CHANGELOG section, not generated ones.
       - run: |
