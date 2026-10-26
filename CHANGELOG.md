@@ -4,6 +4,13 @@ All notable changes to this package are documented here. Versioning follows semv
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-10-26
+
+### Changed
+
+- Searching for "aiand" (or "ai and") in n8n's node panel now finds the node; before, only "ai&" did.
+- The node's description now reads "Japan-hosted AI models. Your data stays in Japan".
+
 ## [0.1.1] - 2026-10-26
 
 ### Changed
