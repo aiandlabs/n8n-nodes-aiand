@@ -4,6 +4,12 @@ All notable changes to this package are documented here. Versioning follows semv
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-26
+
+### Changed
+
+- Releases are staged on npm through a trusted publisher and go live only after a maintainer approves them with 2FA. No npm token is stored in the repository.
+
 ## [0.1.0] - 2026-10-23
 
 ### Added
