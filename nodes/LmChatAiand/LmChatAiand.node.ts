@@ -30,11 +30,13 @@ export class LmChatAiand implements INodeType {
 		group: ['transform'],
 		subtitle: '={{$parameter["model"]}}',
 		version: [1],
-		description: 'Use open-weight chat models served by ai& from Japan',
+		description: 'Japan-hosted AI models. Your data stays in Japan',
 		defaults: {
 			name: 'ai& Chat Model',
 		},
 		codex: {
+			// Search matches the display name, and "ai&" is hard to type; let "aiand" find it.
+			alias: ['aiand', 'ai and', 'LLM'],
 			categories: ['assistant'],
 			subcategories: {
 				AI: ['Language Models', 'Root Nodes'],
