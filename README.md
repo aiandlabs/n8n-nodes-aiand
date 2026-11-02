@@ -34,7 +34,7 @@ n8n checks the key against `https://api.aiand.com/v1/models` when you save the c
 ### Example: an agent with a tool
 
 1. **Chat Trigger** → **AI Agent**
-2. **ai& Chat Model** → the agent's Chat Model input, model `deepseek-ai/deepseek-v4.1-flash`
+2. **ai& Chat Model** → the agent's Chat Model input, model `deepseek-ai/deepseek-v4.1-flash-1017`
 3. **Calculator** → the agent's Tool input
 
 Ask the chat "What is 1234 × 5678 + 91011?" and the agent calls the calculator twice before answering.

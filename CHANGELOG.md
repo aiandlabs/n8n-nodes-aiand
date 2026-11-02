@@ -4,6 +4,12 @@ All notable changes to this package are documented here. Versioning follows semv
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-11-02
+
+### Changed
+
+- New ai& Chat Model nodes default to `deepseek-ai/deepseek-v4.1-flash-1017`. The previous default, `deepseek-ai/deepseek-v4.1-flash`, retires on 2026-11-06 0:00 JST; a node already set to it keeps that model until you switch it.
+
 ## [0.1.2] - 2026-10-26
 
 ### Changed
