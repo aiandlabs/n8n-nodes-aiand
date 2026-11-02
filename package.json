@@ -1,6 +1,6 @@
 {
 	"name": "@aiand/n8n-nodes-aiand",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "n8n chat model node for ai&. Japan-hosted AI models. Your data stays in Japan",
 	"license": "MIT",
 	"homepage": "https://github.com/aiandlabs/n8n-nodes-aiand#readme",

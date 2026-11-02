@@ -100,7 +100,7 @@ export class LmChatAiand implements INodeType {
 						},
 					},
 				},
-				default: 'deepseek-ai/deepseek-v4.1-flash',
+				default: 'deepseek-ai/deepseek-v4.1-flash-1017',
 			},
 			{
 				displayName: 'Options',
